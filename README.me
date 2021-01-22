@@ -1,0 +1,28 @@
+create config.json
+Start themaid.py and mapi.py as separate processes
+
+independencies:
+	* mariadb
+	* steam and csgoserver
+	* apache or other hosting fastdl folder
+		database for surftimer
+		database for time tracker plugin
+	* SurfTimer plugin - sourcemod plugin
+	* Player Time Tracker - sourcemod plugin 
+	* linux filesystem (for now)
+
+example config.json:
+
+{"csgofolder": "/home/steam/csgosv/csgo/",
+	"mapsfolder": "/home/steam/csgosv/csgo/maps/",
+	"fastdlfolder": "/var/www/html/fastdl/maps/",
+	"domain": "https://mydomain.com",
+	"port" : "5042",
+	"prefix": "!",
+	"dctoken": "NzY2MawfawfTg3MDIyNzk0ODAy.X4e22drgdrgrLchO04v346346ryhObIRRsh2v5edE",
+	"dbhost": "localhost",
+	"dbuser": "root",
+	"dbpw": "password",
+	"surfdb": "surftimer",
+	"trackdb": "tracker"
+}

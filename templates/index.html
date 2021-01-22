@@ -1,0 +1,29 @@
+<html>
+
+<body style="background-color:#181818; color:#808080; font-family:'Lucida Console'">
+<style>
+/* unvisited link */
+a:link {
+  color: #808080;
+}
+
+/* visited link */
+a:visited {
+  color: #808080;
+}
+
+/* mouse over link */
+a:hover {
+  color: #CC0066;
+}
+
+/* selected link */
+a:active {
+  color: #808080;
+}
+</style>
+<center>
+{% autoescape false %} {{ data }} {% endautoescape %}
+</center>
+</body>
+</html>
