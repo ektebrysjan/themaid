@@ -19,7 +19,6 @@ CORS(app)
 def index():
     return "no request"
 
-
 @app.route('/st', methods=['GET']) # status
 def status():
 
@@ -60,7 +59,6 @@ def leader():
 
 	return response
 
-
 @app.route('/tp', methods=['GET']) # timeplayed
 def timeplayed():
 
@@ -82,8 +80,6 @@ def timeplayed():
 		time = str(surfsql.gettime(item[2], 0))
 		response = response + surfsql.pad(name) + surfsql.pad(time) + newline
 
-	
-
 	if m == "www":
 		response = "<pre>" + response + "</pre>"
 		return render_template('index.html', data = response)
@@ -94,7 +90,6 @@ def getmaps():
 	mapmesg = ""
 	maplist = (surfsql.getmaps())
 	
-
 	if 'm' in request.args:
 			m = request.args['m']
 			if m == "www":
@@ -103,12 +98,11 @@ def getmaps():
 			response = mapmesg
 			response = "<pre>" + response + "</pre>"
 			return render_template('index.html', data = response)
+			
 	else:
 		response = json.dumps(maplist)
 
 	return response
-
-
 
 if __name__ == "__main__":
     app.run(host=adomain, port=aport, ssl_context=('/home/steam/ssl/fullchain.pem', '/home/steam/ssl/privkey.pem'))

@@ -1,6 +1,5 @@
 # Link for token: https://discordapp.com/oauth2/authorize?client_id= ***CLIENTID*** &scope=bot&permissions=8
 
-
 import asyncio
 from discord.ext import commands
 import os

@@ -4,7 +4,7 @@ import datetime
 from difflib import SequenceMatcher
 import json
 
-# surfsql.py inneholder funksjoner for å hente ut tider ifra surfdatabasen basert på kriteriene: 
+# surfsql.py inneholder funksjoner bl.a for å hente ut tider ifra surfdatabasen basert på kriteriene: 
 # Beste tid på alle maps (qmode: all), de 10 beste tidene på et spesifikt map (qmode: map) eller alle tidene til en surfer (qmode: usr)
 # Presiserer du map, sjekker den om mapet eksisterer i mapcycle, og kjører så en spørring
 
@@ -26,11 +26,6 @@ dbuser = str(config['dbuser'])
 dbpw = str(config['dbpw'])
 surfdb = str(config['surfdb'])
 trackdb = str(config['trackdb'])
-
-print(dbhost, dbuser, dbpw, surfdb, trackdb, csgofolder)
-
-
-
 
 # padding funksjon for å lage jevne kolonner i discord meldinger
 def pad(word, len_=30, spacer=' '):
@@ -77,7 +72,7 @@ def gettime(time, arg=1): # Lag en string med minutt:sekund:millisekund hvor get
     #return ("" + str(minutes) + ":" + str(seconds) + ":" + milliseconds)
         
 
-# Hent liste over maps
+# Hent liste over maps. Denne spør ikke databasen da maps som ikke lenger er i bruk kan refereres til der.
 def getmaps():
     with open(csgofolder + 'maplist.txt', 'r') as a_file:
         
@@ -86,8 +81,7 @@ def getmaps():
         a_file.close()
         return maplist
 
-# Funksjon for å hente alle rekorder eller spesifikk map eller brukernavn rekord
-
+# Funksjoner for å hente total tid en bruker har vært koblet til serveren. Tracket av sourcemod plugin i tracker databasen.
 def timetopten():
     mydb = mysql.connector.connect(
         host=dbhost,
@@ -119,7 +113,7 @@ def timeplayed(arg):
     return str(timespent)
 
 
-
+# Funksjon for å hente ut alle server rekorder, top 10 rekorder for et spesifikt map eller rekorder satt av en bruker.
 def getrecords(spef):
 
     global tidlis, qmode, toprecs, steamid, usermatch
@@ -141,7 +135,7 @@ def getrecords(spef):
     steamid = ""
     qmode = ""
     
-    if (spef in maplist):    
+    if (spef in maplist):           # Dersom argumentet (spef) er i maplisten, hent top 10 rekorder på det mappet
     
         qmode = "map"
         sql = f"""select mapname, name, runtimepro from ck_playertimes  where mapname = '{spef}' order by runtimepro asc limit 10;"""
@@ -154,7 +148,7 @@ def getrecords(spef):
         listrec = record
                            
     
-    elif (spef == ""):              # Om ikke spef list alle maprekorder
+    elif (spef == ""):              # Om ikke map eller bruker spesifisert (spef) list alle maprekorder
         qmode = "all"
         for item in maplist:
                 
@@ -166,7 +160,7 @@ def getrecords(spef):
                 tidlis.append(gettime(float(record[0][2]))) 
                 listrec.extend(record)
                    
-    else:                           # Anta at det er et brukernavn og sjekk evt etter lignende:
+    else:                           # Om ingen av de to over, anta at det er et brukernavn og sjekk evt etter lignende:
             qmode = "usr"
             ratiodict = {}
             sql = f"""select upper(name), steamid from ck_playertimes;"""
@@ -211,12 +205,10 @@ def getrecords(spef):
             for item in totalrec:
                 if (item[1] == steamid):
                     toprecs += 1
-
             
     return listrec
 
-# Lag discord-vennlig table og hent ut maps og navn fra getrecords records og riktig formattert tid ifra global tidlis. Dette er fordi man ikke kan endre en item i en tuple liste som records er.
-# Sjekker qmode for formattering. 
+# Lag discord-vennlig table og hent ut maps og navn fra getrecords records og riktig formattert tid ifra global tidlis. Sjekker qmode for formattering. Burde egentlig gjøres i api'et.
 def maketable(arg):
     global tidlis, qmode, toprecs, steamid, usermatch
     tablestr = ""
