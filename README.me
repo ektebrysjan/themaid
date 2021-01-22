@@ -21,20 +21,28 @@ themaid.py
 
 mapi.py
 	flask based restful api for local or remote calls to the sql database. Can return discord formatted or html formatted.
-	
+
 
 
 Dependencies:
 	* linux filesystem (for now)
 	* mariadb, might work with mysql
+	* python 3
 	* steam and csgoserver
-	* apache or other hosting fastdl folder
-		database for surftimer
-		database for time tracker plugin
-	* SurfTimer plugin - sourcemod plugin
-	* Player Time Tracker - sourcemod plugin
+	* apache or other webserver hosting fastdl folder
+	* certbot ssl certificate
+	* surftimer 			 - sourcemod plugin
+	* Player Time Tracker 	 - sourcemod plugin
 
-for python dependencies see source code.
+
+Python pip3 dependencies:
+	Flask
+	Flask CORS
+	mysql.connector
+	difflib
+	import asyncio
+	discord.py
+
 
 
 example config.json:
