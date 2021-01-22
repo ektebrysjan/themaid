@@ -1,15 +1,40 @@
-create config.json
-Start themaid.py and mapi.py as separate processes
+Usage:
+1. create config.json in main directory
+2. Configure settings. 
+3. give permissions to steam user to fastdl folder 
+4. Create a database for time tracker with a table named TimeTracker containing collumns:
+	name
+	steamid
+	TimePlayed
+	tracking
 
-independencies:
-	* mariadb
+5. Start themaid.py and mapi.py as separate processes:
+	python3 themaid.py
+	python3 mapi.py
+
+
+Overview:
+themaid.py
+	A discord bot using discord.py command object to answer prefix commands i.e: !s
+	It will return things like server status, records on a specific map or all map records through a restful API called mapi.py
+
+mapi.py
+	flask based restful api for local or remote calls to the sql database. Can return discord formatted or html formatted.
+
+
+
+Independencies:
+	* linux filesystem (for now)
+	* mariadb, might work with mysql
 	* steam and csgoserver
 	* apache or other hosting fastdl folder
 		database for surftimer
 		database for time tracker plugin
 	* SurfTimer plugin - sourcemod plugin
-	* Player Time Tracker - sourcemod plugin 
-	* linux filesystem (for now)
+	* Player Time Tracker - sourcemod plugin
+
+for python independencies see source code.
+
 
 example config.json:
 
