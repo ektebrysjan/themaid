@@ -42,14 +42,14 @@ def status():
 
 @app.route('/lb', methods=['GET']) # leaderboards
 def leader():
-	#try:
-	if 'arg' in request.args:
-		leaderboard = request.args.get('arg')
-		response =  surfsql.maketable(leaderboard)
-	else:
-		response = surfsql.maketable("")
-	#except:
-	#	response = "Invalid command or no data"
+	try:
+		if 'arg' in request.args:
+			leaderboard = request.args.get('arg')
+			response =  surfsql.maketable(leaderboard)
+		else:
+			response = surfsql.maketable("")
+	except:
+		response = "Invalid command or no data"
 
 	if 'm' in request.args:
 			m = request.args['m']
