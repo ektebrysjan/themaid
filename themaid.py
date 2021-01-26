@@ -26,20 +26,11 @@ domain =  str(config['domain'])
 apidomain = domain + ":" + aport
 bprefix  = str(config['prefix'])
 adminid = str(config['adminid'])
-
-welcomemessage = "Welcome to #serv#, #user#!"
+welcomemessage = str(config['welcome'])
 
 terplist =["Terped up on the scene, keepin it Crispy Creme.", "Terp Nation, Terp Motivation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
 
 bot = commands.Bot(command_prefix=bprefix, intents = intents, case_insensitive=True)
-#bot = commands.Bot(command_prefix=bprefix, case_insensitive=True)
-
-def pad(word, len_=30, spacer=' '):
-    return word + (len_ - len(word)) * spacer
-
-def setwelcome(msg):
-    global welcomemessage
-    welcomemessage = msg
 
 def parsemsg(raw, obj):
     try:
@@ -160,18 +151,18 @@ async def h(ctx):
 
     if channelname == "admin" or adminid in roles:
         
-        embedVar = discord.Embed(title="Hello " + str(ctx.message.author.display_name), description="I'm **The Maid.** I keep it tidy in Mike's Apartment.\n\n\n", color=0x00ff00)
+        embedVar = discord.Embed(title="Help Menu: ", description="Admin commands: \n\n-", color=0x6B2121)
         embedVar.add_field(name="!h", value="Shows this menu", inline=False)
         embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon**", inline=False)
         embedVar.add_field(name="!m", value="Shows current installed maps.", inline=False)
         embedVar.add_field(name="!tp", value="Shows top ten users based on total connection time.", inline=False)
         embedVar.add_field(name="!s", value="Shows the status of the server, including connected players.", inline=False)
-        embedVar.add_field(name="!w", value="Shows or sets the Welcome message for the server. Example: **!w welcomemessage**", inline=False)       
+        embedVar.add_field(name="!w", value="""Shows or sets the discord Welcome message. Example: **!w "Welcome to #serv#, #user#!"**""", inline=False)       
         embedVar.add_field(name="!cmd **console command**", value="Runs a console command on the server. Example: **!cmd changelevel surf_map**", inline=False)
         await ctx.send(embed=embedVar)
     
     else:
-        embedVar = discord.Embed(title="Hello", description="I'm **The Maid.** I keep it tidy in Mike's Apartment.\n\n\n ", color=0x00ff00)
+        embedVar = discord.Embed(title="Help Menu: ", description="Commands: \n\n-", color=0x6B2121)
         embedVar.add_field(name="!h", value="Shows this menu", inline=False)
         embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon** or **!r someuser**", inline=False)
         embedVar.add_field(name="!m", value="Shows current installed maps.", inline=False)
@@ -277,13 +268,13 @@ async def w(ctx, arg1='0'):
 
     if channelname == "admin" or adminid in roles:
         if arg1 == "0":
-            await ctx.send("This is the current welcome message:")
+            await ctx.send("```This is the current welcome message:```")
 
             response = parsemsg(welcomemessage, ctx)
             await ctx.send(response)
 
         else:
-            setwelcome(arg1)
+            welcomemessage = arg1
             await ctx.send("```New welcome message set```")
     else:
         await ctx.send ("```Not admin```")
