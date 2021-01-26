@@ -48,6 +48,8 @@ def gettime(time, arg=1): # Lag en string med minutt:sekund:millisekund hvor get
         seconds = str(int(seconds))
         minutes = minutes.zfill(2)
         seconds = seconds.zfill(2)
+        milliseconds = milliseconds.zfill(3)
+        
         return str(("%s:%s:%s" % (minutes, seconds, milliseconds)))
 
     else:        
