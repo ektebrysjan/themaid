@@ -49,7 +49,7 @@ def gettime(time, arg=1): # Lag en string med minutt:sekund:millisekund hvor get
         minutes = minutes.zfill(2)
         seconds = seconds.zfill(2)
         milliseconds = milliseconds.zfill(3)
-        
+
         return str(("%s:%s:%s" % (minutes, seconds, milliseconds)))
 
     else:        
@@ -71,8 +71,6 @@ def gettime(time, arg=1): # Lag en string med minutt:sekund:millisekund hvor get
         seconds = seconds.zfill(2)
 
         return ("%s:%s:%s:%s" % (day, hour, minutes, seconds))
-    #return ("" + str(minutes) + ":" + str(seconds) + ":" + milliseconds)
-        
 
 # Hent liste over maps. Denne spør ikke databasen da maps som ikke lenger er i bruk kan refereres til der.
 def getmaps():
@@ -256,5 +254,5 @@ def maketable(arg):
             row = pad(("# " + str(x+1))) + pad(player) + pad(str(tidlis[x]))
             tablestr = (tablestr + row + "\n")
            
-    return (altitle + "\n\n" + "```" + title + "\n \n" + tablestr + "```")
+    return (altitle + "\n\n" + "```apache\n" + title + "\n \n" + tablestr + "```")
 
