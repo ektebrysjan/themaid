@@ -28,8 +28,8 @@ bprefix  = str(config['prefix'])
 adminid = str(config['adminid'])
 welcomemessage = str(config['welcome'])
 
-terplist =["Terped up on the scene, keepin it Crispy Creme.", "Terp Nation, Terp Motivation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
-lastmsg = ""
+terplist = ["It was a Terpy Terpy day!", "Whole lotta Terp shiet.", "Terped up, ya know, on the scene keepin it Crispy Creme.", "Terp Motivation, Terp Elevation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
+lastmsg = "2"
 
 bot = commands.Bot(command_prefix=bprefix, intents = intents, case_insensitive=True)
 
@@ -138,9 +138,9 @@ async def on_message(message):
 
     if 'TERP' in (str(message.content)).upper():
         
-        while msg != lastmsg:
+        while not lastmsg == msg:
             msg = str(random.choice(terplist))
-            lastmsh = msg
+            lastmsg = msg
 
         await message.channel.send(msg)
 
