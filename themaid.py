@@ -29,6 +29,7 @@ adminid = str(config['adminid'])
 welcomemessage = str(config['welcome'])
 
 terplist =["Terped up on the scene, keepin it Crispy Creme.", "Terp Nation, Terp Motivation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
+lastmsg = ""
 
 bot = commands.Bot(command_prefix=bprefix, intents = intents, case_insensitive=True)
 
@@ -44,6 +45,11 @@ def parsemsg(raw, obj):
     msg = msg.replace("#serv#", servername)
 
     return msg 
+
+def getstockprice(ticker):
+    x = requests.get('http://api.marketstack.com/v1/intraday/latest?access_key=a39f5913720ae27952e5a293cf7d3ec9&symbols=' + ticker.upper())
+    s = x.json()
+    return (s['data'][0]['last'])
 
 def deletemap(map):
         ex = []
@@ -124,11 +130,20 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    global lastmsg
+    msg = ""
+
     if message.author == bot.user:
         return
 
     if 'TERP' in (str(message.content)).upper():
-        await message.channel.send(str(random.choice(terplist)))
+        
+        while msg != lastmsg:
+            msg = str(random.choice(terplist))
+            lastmsh = msg
+
+        await message.channel.send(msg)
+
 
     await bot.process_commands(message)
 
@@ -193,6 +208,21 @@ async def s(ctx):
 async def r(ctx, arg=''):
     recson = requests.get(apidomain + "/lb?arg=" + arg)
     response = (str(recson.text))
+    await ctx.send(response)
+
+@bot.command()
+async def kurs(ctx, arg=''):
+    response = ""
+    if arg == '':
+        await ctx.send("```No ticker specified.```")
+
+    else:
+        try:
+            price = str(getstockprice(arg))
+            response = "The price of " + arg.upper() +" is $" + price
+        except:
+            price = "```No data found.```"
+
     await ctx.send(response)
 
         

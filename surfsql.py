@@ -175,7 +175,7 @@ def getrecords(spef):
                     compname = (item[0])
                     seq = SequenceMatcher(a=compname, b=spef)
                     ratio = seq.ratio()
-                    if ratio >= 0.5:
+                    if ratio >= 0.4:
                         ratiodict[compname] = ratio
 
                 max_key = max(ratiodict, key=ratiodict.get)
