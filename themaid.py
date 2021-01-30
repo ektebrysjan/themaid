@@ -16,23 +16,25 @@ f = open("config.json", "r")
 config = f.read()
 config = json.loads(config)
 
+# For loop setter hver key som en varibel med value value.
+for setting, v in config.items():
+    globals()[setting] = str(v)
 
+# Variables:
+# aport - port for apiservice
+# dctoken - token for dcbot
+# csgofolder - where csgo is located
+# mapsfolder - where maps are located
+# fastdlfolder - webhosted folder for fastdl of maps
+# domain - domain name
+# bprefix - bot prefix, standard "!"
+# adminid - string or number distinguising the admin discord channel.
+# welcomemessage - message to new discord server users.
+# accesskey - api token for stock api
 
-adomain = str(config['domain']).replace('https://', '')
-aport = str(config['port'])
-dctoken = str(config['dctoken'])
-csgofolder = str(config['dctoken'])
-mapsfolder = str(config['mapsfolder'])
-fastdlfolder = str(config['fastdlfolder'])
-domain =  str(config['domain'])
-apidomain = domain + ":" + aport
-bprefix  = str(config['prefix'])
-adminid = str(config['adminid'])
-welcomemessage = str(config['welcome'])
-accesskey = str(config['accesskey'])
-
+adomain = 'https://' + domain
+apidomain = adomain + ":" + aport
 terplist = ["It was a Terpy Terpy day!", "Whole lotta Terp shiet.", "Terped up, ya know, on the scene keepin it Crispy Creme.", "Terp Motivation, Terp Elevation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
-lastmsg = "2"
 
 bot = commands.Bot(command_prefix=bprefix, intents = intents, case_insensitive=True)
 
@@ -164,17 +166,14 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    global lastmsg
-    msg = ""
 
     if message.author == bot.user:
         return
 
     if 'TERP' in (str(message.content)).upper():
         
-        while not lastmsg == msg:
-            msg = str(random.choice(terplist))
-            lastmsg = msg
+        msg = str(random.choice(terplist))
+        lastmsg = msg
 
         await message.channel.send(msg)
 
