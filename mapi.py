@@ -9,8 +9,11 @@ f = open("config.json", "r")
 config = f.read()
 config = json.loads(config)
 
-adomain = str(config['domain']).replace('https://', '')
-aport = str(config['port'])
+# For loop setter hver key som en varibel med value .
+for setting, v in config.items():
+    globals()[setting] = str(v)
+
+adomain = domain + 'https://'
 
 app = Flask(__name__)
 CORS(app)
@@ -105,4 +108,4 @@ def getmaps():
 	return response
 
 if __name__ == "__main__":
-    app.run(host=adomain, port=aport, ssl_context=('/home/steam/ssl/fullchain.pem', '/home/steam/ssl/privkey.pem'))
+    app.run(host=domain, port=aport, ssl_context=('/home/steam/ssl/fullchain.pem', '/home/steam/ssl/privkey.pem'))

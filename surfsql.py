@@ -20,12 +20,9 @@ f = open("config.json", "r")
 config = f.read()
 config = json.loads(config)
 
-csgofolder = str(config['csgofolder'])
-dbhost =  str(config['dbhost'])
-dbuser = str(config['dbuser'])
-dbpw = str(config['dbpw'])
-surfdb = str(config['surfdb'])
-trackdb = str(config['trackdb'])
+# For loop setter hver key som en varibel med value .
+for setting, v in config.items():
+    globals()[setting] = str(v)
 
 # padding funksjon for å lage jevne kolonner i discord meldinger
 def pad(word, len_=30, spacer=' '):
