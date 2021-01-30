@@ -16,6 +16,8 @@ f = open("config.json", "r")
 config = f.read()
 config = json.loads(config)
 
+
+
 adomain = str(config['domain']).replace('https://', '')
 aport = str(config['port'])
 dctoken = str(config['dctoken'])
@@ -27,6 +29,7 @@ apidomain = domain + ":" + aport
 bprefix  = str(config['prefix'])
 adminid = str(config['adminid'])
 welcomemessage = str(config['welcome'])
+accesskey = str(config['accesskey'])
 
 terplist = ["It was a Terpy Terpy day!", "Whole lotta Terp shiet.", "Terped up, ya know, on the scene keepin it Crispy Creme.", "Terp Motivation, Terp Elevation.", "I don't speak English, I speak Terpanese.", "Oh we got sum right here, that Terp shit, that's real shit!"]
 lastmsg = "2"
@@ -46,10 +49,41 @@ def parsemsg(raw, obj):
 
     return msg 
 
-def getstockprice(ticker):
-    x = requests.get('http://api.marketstack.com/v1/intraday/latest?access_key=a39f5913720ae27952e5a293cf7d3ec9&symbols=' + ticker.upper())
-    s = x.json()
-    return (s['data'][0]['last'])
+def json_extract(obj, key):
+    """Recursively fetch values from nested JSON."""
+    arr = []
+
+    def extract(obj, arr, key):
+        """Recursively search for values of key in JSON tree."""
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if isinstance(v, (dict, list)):
+                    extract(v, arr, key)
+                elif k == key:
+                    arr.append(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                extract(item, arr, key)
+        return arr
+
+    values = extract(obj, arr, key)
+    return values
+
+
+
+## http://api.marketstack.com/v1/exchanges?access_key={accesskey}
+## Denne viser tilgjengelige børser og kan sorteres etter name, acronym og mic
+
+def getstockinfo(ticker, itemm):
+    try:
+        global accesskey
+        x = requests.get(f"http://api.marketstack.com/v1/tickers/{ticker}.xosl/eod?access_key={accesskey}") #ticker her kan byttes ut med en {mic} variabel for riktig børs
+        jsonresponse = x.json()
+        obj = json_extract(jsonresponse, itemm)
+        response = obj
+        return response 
+    except:
+        return ["no data"]
 
 def deletemap(map):
         ex = []
@@ -210,20 +244,31 @@ async def r(ctx, arg=''):
     response = (str(recson.text))
     await ctx.send(response)
 
+
+
+# ASKJE STÆSJ, SKAL FLYTTES TIL EGEN API/SERVICE
+
 @bot.command()
-async def kurs(ctx, arg=''):
-    response = ""
+async def aksje(ctx, arg=''):
     if arg == '':
         await ctx.send("```No ticker specified.```")
 
     else:
         try:
-            price = str(getstockprice(arg))
-            response = "The price of " + arg.upper() +" is $" + price
+            date = getstockinfo(arg, 'date')
+            name = getstockinfo(arg, 'name')
+            close = getstockinfo(arg, 'close')
+            datestr = str(date[0])
+            datestr = datestr[:10]
+            namestr = str(name[0])
+            closestr = str(close[0])
+            response = f"""```Firma:\n{namestr}\n\nClosing price on {datestr}: {closestr} NOK```"""
         except:
-            price = "```No data found.```"
+            response = "```Error. Does the ticker exist on OBX?```"
 
     await ctx.send(response)
+# ASKJE STÆSJ, SKAL FLYTTES TIL EGEN API/SERVICE
+
 
         
 @bot.command()
@@ -308,7 +353,6 @@ async def w(ctx, arg1='0'):
             await ctx.send("```New welcome message set```")
     else:
         await ctx.send ("```Not admin```")
-
 
 bot.run(dctoken)
          
