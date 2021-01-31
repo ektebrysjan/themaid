@@ -1,0 +1,57 @@
+<html>
+<script>
+function httpGet(theUrl)
+  { 
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.setRequestHeader("X-Rapidapi-Key", "04c21848femsh5098ff10e7afa1ap19eef2jsn527aba338b9d")
+    xmlHttp.setRequestHeader("X-Rapidapi-Host", "morningstar1.p.rapidapi.com")
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+      $("button").click(function(){
+        var obj = httpGet('https://morningstar1.p.rapidapi.com/live-stocks/GetRawQuoteHeaderInfo?Mic=XOSL&Ticker=' + $("#ticker").val() );
+        var day = httpGet('https://morningstar1.p.rapidapi.com/live-stocks/GetRawRealtimeFigures?Mic=XOSL&Ticker=' + $("#ticker").val() );
+        
+        var jday = JSON.parse(day);
+        var jobj = JSON.parse(obj);
+
+        $("div1").text('Company: ' + jobj["securityName"]);
+        $("div2").text('Price per share: ' + jday["lastPrice"] + " NOK");
+        $("div3").text('Movement today: ' + jday["dayChangePer"] + '%');
+      })
+  });
+</script>
+<body style="background-color:#181818; color:#808080; font-family:'Lucida Console'">
+<style>
+a:link {
+  color: #808080;
+}
+a:visited {
+  color: #808080;
+}
+a:hover {
+  color: #CC0066;
+}
+
+a:active {
+  color: #808080;
+}
+</style>
+<center>
+<div1> </div1>
+<br>
+<div2></div2>
+<br>
+<div3></div3>
+<br>
+<br>
+<input name="ticker" id="ticker" value="AKERBP">
+<br>
+<button>Click here</button>
+</body>
+</html>

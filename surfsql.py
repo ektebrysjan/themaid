@@ -20,7 +20,7 @@ f = open("config.json", "r")
 config = f.read()
 config = json.loads(config)
 
-# For loop setter hver key som en varibel med value .
+# For loop setter hver key i config.json som en varibel med value .
 for setting, v in config.items():
     globals()[setting] = str(v)
 

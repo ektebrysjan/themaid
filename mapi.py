@@ -107,5 +107,9 @@ def getmaps():
 
 	return response
 
+@app.route('/stock', methods=['GET'])
+def openstock():
+	return render_template('stock.html')	
+
 if __name__ == "__main__":
     app.run(host=domain, port=aport, ssl_context=('/home/steam/ssl/fullchain.pem', '/home/steam/ssl/privkey.pem'))
