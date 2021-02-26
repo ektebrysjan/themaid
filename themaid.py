@@ -241,7 +241,11 @@ async def s(ctx):
             
 @bot.command()
 async def r(ctx, arg=''):
-    recson = requests.get(apidomain + "/lb?arg=" + arg + "&m=dc")
+    newarg = arg
+    if "surf_" in arg:
+            newarg = arg.replace("surf_", "420surf420")
+            print (newarg)
+    recson = requests.get(apidomain + "/lb?arg=" + newarg + "&m=dc")
     response = (str(recson.text))
     await ctx.send(response)
 

@@ -101,7 +101,7 @@ def timetopten():
 def timeplayed(arg):
     sql = f"""select steamid, TimePlayed from TimeTracker where steamid = '{arg}';"""
     timequery = runQuery(sql,1)
-    timespent = gettime(float(timequery[0][1]), 0)
+    timespent = formatTime(float(timequery[0][1]), 0)
     return str(timespent)
 
 # Funksjon for å hente ut alle server rekorder, top 10 rekorder for et spesifikt map eller rekorder satt av en bruker.
@@ -111,6 +111,9 @@ def getrecords(arg=''):
         toprecs = 0
         maplist = getmaps()
         userlist = []
+        if f"surf_{arg}" in maplist:
+            arg = "surf_" + arg
+
         if arg in maplist:
             qmode = "map"
             jDict = {}
@@ -123,7 +126,7 @@ def getrecords(arg=''):
                     jDict[i] = {'steamid': str(item[0]), 'name' : item[1], 'mapname': item[2], 'time' : formatTime(item[3])}
                 i += 1
 
-            return jDict
+            
 
         elif arg == "":
             qmode = "all"
@@ -160,12 +163,15 @@ def getrecords(arg=''):
             sql = f"""select steamid, name, mapname, runtimepro from ck_playertimes where steamid = (select steamid from ck_playertimes where upper(name) = upper('{arg}') limit 1);"""
             respons = runQuery(sql)
             steamid = respons[0][0]
+            timep = timeplayed(steamid)
             i = 0
             jDict = {}
             for item in respons:
-                jDict[i] = {'steamid': str(item[0]), 'name' : item[1], 'mapname': item[2], 'time' : formatTime(item[3])}
+                jDict[i] = {'steamid': str(item[0]), 'name' : item[1], 'mapname': item[2], 'time' : formatTime(item[3]), 'timeplayed' : str(timep)}
                 i += 1
 
+        jDict['qmode'] = qmode
+        return jDict
 #            for item in maplist:
 #              
 #                sql = f"""select mapname, steamid, runtimepro from (select * from ck_playertimes order by mapname desc, runtimepro desc) x where mapname='{item}' group by mapname;"""
@@ -178,9 +184,7 @@ def getrecords(arg=''):
 #               if (item[1] == steamid):
 #                   toprecs += 1
 #            jDict['toprecords'] = toprecs
-        jDict['qmode'] = qmode
-        return jDict
-
+        
 
 
 

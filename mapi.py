@@ -21,12 +21,9 @@ CORS(app)
 def pad(word, len_=30, spacer=' '):
     return word + (len_ - len(word)) * spacer
 
-def maketable(arg):
-    
+def maketable(arg): 
     table = arg
     qmode = table['qmode']
-    #print (table)
-
     tablestr = ""
 
     if qmode == "all":
@@ -40,13 +37,12 @@ def maketable(arg):
         	tablestr = (tablestr + row + "\n")
     
     elif qmode == "usr":
-        
         altitle = ""
 
         try:
-            timespent = surfsql.timeplayed(steamid)
+        	timespent = table[0]['timeplayed']
         except:
-             timespent = "No data"
+            timespent = "No data"
 
         altitle = altitle + """__**""" + str(table[0]['name']) + """'s** map records:__\n\nTotal time spent on server: """ + str(timespent)
         title = pad("Map") + pad("Time")
@@ -57,7 +53,6 @@ def maketable(arg):
         	tablestr = (tablestr + row + "\n")
     
     elif qmode == "map":
-        #map = str(table[0][0])
         altitle = """__Best times on: **""" + str(table[0]['mapname']) + """**:__"""
         title = pad("Place") + pad("Player") + pad("Time")
         for x in table.keys():
@@ -94,7 +89,6 @@ def status():
 				response = "<pre>" + response + "</pre>"
 				return render_template('index.html', data = response)
 
-
 			elif m == "json":
 				jsonres = {}
 				jsonres['data'] = response
@@ -106,20 +100,26 @@ def status():
 
 @app.route('/lb', methods=['GET']) # leaderboards
 def leader():
-	#try:
-	if 'arg' in request.args:
+	try:
+		if 'arg' in request.args:
 
-		arg = request.args['arg']
-		recdict = surfsql.getrecords(arg)
+			arg = request.args['arg']
+			newarg = arg
+			print (arg)
+			if "420surf420" in arg:
+				newarg = arg.replace("420surf420","surf_")
+				print(newarg)
 
-		response =  maketable(recdict)
-	else:
-		recdict = surfsql.getrecords()
+			recdict = surfsql.getrecords(newarg)
 
-		response =  maketable(recdict)
+			response =  maketable(recdict)
+		else:
+			recdict = surfsql.getrecords()
 
-	#except:
-	#	response = "Invalid command or no data"
+			response =  maketable(recdict)
+
+	except:
+		response = "Invalid command or no data"
 
 	if 'm' in request.args:
 			m = request.args['m']
