@@ -6,6 +6,8 @@ import discord as discord
 import random
 import os
 import json
+import time
+
 import requests
 
 
@@ -222,24 +224,24 @@ async def h(ctx):
 @bot.command()
 async def m(ctx):
     mapmesg = ""
-    mapson = requests.get(apidomain + "/gm")
-    maplist = json.loads(mapson.text)
-    for map in maplist:
-        mapmesg = mapmesg + str(map) + "\n"
+    getmaps = requests.get(apidomain + "/gm?m=dc")
+    mapmesg = getmaps.text
+
+
    
     await ctx.send("__List of active maps:__" + "\n" + "```" + mapmesg + "```")
 
 @bot.command()
 async def s(ctx):
 
-    getstat = requests.get(apidomain + "/st")
+    getstat = requests.get(apidomain + "/st?m=dc")
     response = getstat.text
     await ctx.send("```" + response + "```")
 
             
 @bot.command()
 async def r(ctx, arg=''):
-    recson = requests.get(apidomain + "/lb?arg=" + arg)
+    recson = requests.get(apidomain + "/lb?arg=" + arg + "&m=dc")
     response = (str(recson.text))
     await ctx.send(response)
 
@@ -282,8 +284,7 @@ async def d(ctx, arg=''):
             roles = ""
 
         if channelname == "admin" or adminid in roles:
-            mapson = requests.get(apidomain + "/gm")
-            maplist = json.loads(mapson.text)
+            maplist= requests.get(apidomain + "/gm?m=dc")
 
             if  arg == '':
                 await ctx.send("```No map specified```")
@@ -300,7 +301,7 @@ async def d(ctx, arg=''):
 
 @bot.command()
 async def tp(ctx):
-    getstat = requests.get(apidomain + "/tp")
+    getstat = requests.get(apidomain + "/tp?m=dc")
     response = getstat.text
     await ctx.send("```" + "Total time played on server\n\n" + response + "```")
                                    
@@ -318,6 +319,10 @@ async def cmd(ctx, arg1, arg2=''):
     if channelname == "admin" or adminid in roles:
         cmd = arg1 + " " + arg2
         os.system('sh sendmsg.sh ' + cmd )
+
+
+
+
         f = open('tmuxout.log')
         response = f.read()
         if len(response) > 1000:

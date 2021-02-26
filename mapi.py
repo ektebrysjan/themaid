@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import surfsql
 import os
 import json
@@ -18,6 +18,60 @@ adomain = domain + 'https://'
 app = Flask(__name__)
 CORS(app)
 
+def pad(word, len_=30, spacer=' '):
+    return word + (len_ - len(word)) * spacer
+
+def maketable(arg):
+    
+    table = arg
+    qmode = table['qmode']
+    #print (table)
+
+    tablestr = ""
+
+    if qmode == "all":
+        altitle = """__All server records by map:__"""
+        title = pad("Map") + pad("Player") + pad("Time")
+
+        for key in (table.keys()):
+        	if key == 'qmode':
+        		break
+        	row = pad(str(table[key]['mapname'])) + pad(str(table[key]['name'])) + pad(str(table[key]['time']))
+        	tablestr = (tablestr + row + "\n")
+    
+    elif qmode == "usr":
+        
+        altitle = ""
+
+        try:
+            timespent = surfsql.timeplayed(steamid)
+        except:
+             timespent = "No data"
+
+        altitle = altitle + """__**""" + str(table[0]['name']) + """'s** map records:__\n\nTotal time spent on server: """ + str(timespent)
+        title = pad("Map") + pad("Time")
+        for x in table.keys():
+        	if x == 'qmode':
+        		break
+        	row = pad(str(table[x]['mapname'])) + pad(str(table[x]['time']))
+        	tablestr = (tablestr + row + "\n")
+    
+    elif qmode == "map":
+        #map = str(table[0][0])
+        altitle = """__Best times on: **""" + str(table[0]['mapname']) + """**:__"""
+        title = pad("Place") + pad("Player") + pad("Time")
+        for x in table.keys():
+            if x == 'qmode':
+                   break
+            player = str(table[x]['name'])                                               # Hent navn for denne loopen x
+            player = (player[:18] + '...') if len(player) > 18 else player          # Er navnet lenger enn 18, forkort
+            
+            row = pad(("# " + str(x+1))) + pad(player) + pad(str(table[x]['time']))
+            tablestr = (tablestr + row + "\n")
+           
+    return (altitle + "\n\n" + "```apache\n" + title + "\n \n" + tablestr + "```")
+
+
 @app.route('/')
 def index():
     return "no request"
@@ -35,32 +89,49 @@ def status():
 
 		if 'm' in request.args:
 			m = request.args['m']
-			if m == "www":
+			if m == "html":
 				response = "<br />".join(response.split("\n"))
 				response = "<pre>" + response + "</pre>"
 				return render_template('index.html', data = response)
 
-		return response
+
+			elif m == "json":
+				jsonres = {}
+				jsonres['data'] = response
+				jsonres['text'] = response
+				return jsonres
+			elif m == "dc":
+				return response
+		return "no format specified."
 
 @app.route('/lb', methods=['GET']) # leaderboards
 def leader():
-	try:
-		if 'arg' in request.args:
-			leaderboard = request.args.get('arg')
-			response =  surfsql.maketable(leaderboard)
-		else:
-			response = surfsql.maketable("")
-	except:
-		response = "Invalid command or no data"
+	#try:
+	if 'arg' in request.args:
+
+		arg = request.args['arg']
+		recdict = surfsql.getrecords(arg)
+
+		response =  maketable(recdict)
+	else:
+		recdict = surfsql.getrecords()
+
+		response =  maketable(recdict)
+
+	#except:
+	#	response = "Invalid command or no data"
 
 	if 'm' in request.args:
 			m = request.args['m']
-			if m == "www":
+			if m == "html":
 				response = "<br />".join(response.split("\n"))
 				response = "<pre>" + response + "</pre>"
 				return render_template('index.html', data = response)
-
-	return response
+			elif m == 'json':
+				return jsonify(recdict)
+			elif m == "dc":
+				return response
+	return "no format specified."
 
 @app.route('/tp', methods=['GET']) # timeplayed
 def timeplayed():
@@ -68,44 +139,56 @@ def timeplayed():
 	response = ""
 	newline = "\n"
 	m = ""
-	title = surfsql.pad("Name") + surfsql.pad("Time (DD:HH:MM:SS)") + "\n\n"
+	title = pad("Name") + pad("Time (DD:HH:MM:SS)") + "\n\n"
 	if 'm' in request.args:
 			m = request.args['m']
-			if m == "www":
+			if m == "html":
 				newline = "<br>"
 				response = title
 	else:
 		response = title
 
 	timedict = surfsql.timetopten()
-	for item in timedict:
-		name = str(item[0])
-		time = str(surfsql.gettime(item[2], 0))
-		response = response + surfsql.pad(name) + surfsql.pad(time) + newline
+	for x in timedict.keys():
+		name = str(timedict[x]['name'])
+		time = str(timedict[x]['time'])
+		response = response + pad(name) + pad(time) + newline
 
-	if m == "www":
+	if m == "html":
 		response = "<pre>" + response + "</pre>"
 		return render_template('index.html', data = response)
-	return response
+
+	elif m == "json":
+		return jsonify(timedict)
+	elif m == "dc":
+		return response
+	return "no format specified."
+
 
 @app.route('/gm', methods=['GET']) # timeplayed
 def getmaps():
 	mapmesg = ""
-	maplist = (surfsql.getmaps())
+	maplist = surfsql.getmaps()
+	response = ""
 	
 	if 'm' in request.args:
 			m = request.args['m']
-			if m == "www":
+			if m == "html":
 				for map in maplist:
 					mapmesg = mapmesg + str(map) + "<br>"
-			response = mapmesg
-			response = "<pre>" + response + "</pre>"
-			return render_template('index.html', data = response)
+				response = mapmesg
+				response = "<pre>" + response + "</pre>"
+				return render_template('index.html', data = response)
 			
-	else:
-		response = json.dumps(maplist)
+			elif m == "json":
+				return jsonify(maplist)
 
-	return response
+			elif m == "dc":
+				for map in maplist:
+					mapmesg = mapmesg + str(map) + "\n"
+				return mapmesg
+
+	return "no format specified. " + m
 
 @app.route('/stock', methods=['GET'])
 def openstock():
