@@ -44,7 +44,7 @@ def maketable(arg):
         except:
             timespent = "No data"
 
-        altitle = altitle + """__**""" + str(table[0]['name']) + """'s** map records:__\n\nTotal time spent on server: """ + str(timespent)
+        altitle = altitle + """__**""" + str(table[0]['name']) + """'s** map times:__\n\nTotal time spent on server: """ + str(timespent)
         title = pad("Map") + pad("Time")
         for x in table.keys():
         	if x == 'qmode':
@@ -102,10 +102,10 @@ def status():
 def leader():
 	try:
 		if 'arg' in request.args:
-
+			
 			arg = request.args['arg']
+			
 			newarg = arg
-			print (arg)
 			if "420surf420" in arg:
 				newarg = arg.replace("420surf420","surf_")
 				print(newarg)

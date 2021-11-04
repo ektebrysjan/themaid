@@ -182,14 +182,19 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-@bot.event
-async def on_member_join(member):
-            global welcomemessage
-            response = parsemsg(welcomemessage, member)
-            await member.send(response)
+## Welcome message should be turned on or off based on which server it is in. no system for that yet so no welcome message.
 
+#@bot.event
+#async def on_member_join(member):
+#            global welcomemessage
+#            response = parsemsg(welcomemessage, member)
+#            await member.send(response)
+
+## HELP MENU
 @bot.command()
-async def h(ctx):
+async def h(ctx, arg1=""):
+
+            ##Try these in case commands are picked up in private messages, making the channel name var empty
     try:
         channelname =  ctx.channel.name
     except:
@@ -199,7 +204,9 @@ async def h(ctx):
     except:
         roles = ""
 
-    if channelname == "admin" or adminid in roles:
+## Here I should add a parameter in the json config for a list of admin users instead, and a command to add and remove admins for the bot.
+
+    if (channelname == "admin" or str(ctx.author) == "mikE#2164" or adminid in roles) and arg1 == "adm":
         
         embedVar = discord.Embed(title="Help Menu: ", description="Admin commands: \n\n-", color=0x6B2121)
         embedVar.add_field(name="!h", value="Shows this menu", inline=False)
@@ -214,7 +221,7 @@ async def h(ctx):
     else:
         embedVar = discord.Embed(title="Help Menu: ", description="Commands: \n\n-", color=0x6B2121)
         embedVar.add_field(name="!h", value="Shows this menu", inline=False)
-        embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon** or **!r someuser**", inline=False)
+        embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon** or **!r someuser** NOT ACTIVATED", inline=False)
         embedVar.add_field(name="!m", value="Shows current installed maps.", inline=False)
         embedVar.add_field(name="!tp", value="Shows top ten users based on total connection time.", inline=False)
         embedVar.add_field(name="!s", value="Shows the status of the server, including connected players.", inline=False)
