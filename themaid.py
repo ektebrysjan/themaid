@@ -214,14 +214,14 @@ async def h(ctx, arg1=""):
         embedVar.add_field(name="!m", value="Shows current installed maps.", inline=False)
         embedVar.add_field(name="!tp", value="Shows top ten users based on total connection time.", inline=False)
         embedVar.add_field(name="!s", value="Shows the status of the server, including connected players.", inline=False)
-        embedVar.add_field(name="!w", value="""Shows or sets the discord Welcome message. Example: **!w "Welcome to #serv#, #user#!"**""", inline=False)       
+        embedVar.add_field(name="!w", value="""Shows or sets the discord Welcome message. Example: **!w "Welcome to #serv#, #user#!"** NOT ACTIVATED""", inline=False)       
         embedVar.add_field(name="!cmd **console command**", value="Runs a console command on the server. Example: **!cmd changelevel surf_map**", inline=False)
         await ctx.send(embed=embedVar)
     
     else:
         embedVar = discord.Embed(title="Help Menu: ", description="Commands: \n\n-", color=0x6B2121)
         embedVar.add_field(name="!h", value="Shows this menu", inline=False)
-        embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon** or **!r someuser** NOT ACTIVATED", inline=False)
+        embedVar.add_field(name="!r", value="Shows the surf leaderboards. Add map or player as a parameter for details. Example: **!r surf_pantheon** or **!r someuser**", inline=False)
         embedVar.add_field(name="!m", value="Shows current installed maps.", inline=False)
         embedVar.add_field(name="!tp", value="Shows top ten users based on total connection time.", inline=False)
         embedVar.add_field(name="!s", value="Shows the status of the server, including connected players.", inline=False)
