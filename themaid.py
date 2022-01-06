@@ -279,8 +279,8 @@ async def aksje(ctx, arg=''):
             response = "```Error. Does the ticker exist on OBX?```"
 
     await ctx.send(response)
-# ASKJE STÆSJ, SKAL FLYTTES TIL EGEN API/SERVICE
 
+# ASKJE STÆSJ, SKAL FLYTTES TIL EGEN API/SERVICE
 
         
 @bot.command()

@@ -195,4 +195,4 @@ def openstock():
 	return render_template('stock.html')	
 
 if __name__ == "__main__":
-    app.run(host=domain, port=aport, ssl_context=('/home/steam/ssl/fullchain.pem', '/home/steam/ssl/privkey.pem'))
+    app.run(host=domain, port=aport, ssl_context=('/etc/letsencrypt/live/ma-surf.no/fullchain.pem', '/etc/letsencrypt/live/ma-surf.no/privkey.pem'))

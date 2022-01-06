@@ -133,7 +133,7 @@ def getrecords(arg=''):
             jDict = {}
             i = 0
             for item in maplist:  
-                print (item)
+                #dprint (item)
                 sql = f"""select steamid, name, mapname, runtimepro from (select * from ck_playertimes order by mapname desc, runtimepro desc) x where mapname='{item}' group by mapname;"""
                 record = runQuery(sql)
                 if not record == []:
