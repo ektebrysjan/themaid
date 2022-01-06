@@ -2,6 +2,7 @@ import mysql.connector
 import os
 import datetime
 from difflib import SequenceMatcher
+import re
 import json
 
 
@@ -79,9 +80,13 @@ def formatTime(time, arg=1): # Lag en string med minutt:sekund:millisekund hvor 
 
 # Hent liste over maps. Denne spør ikke databasen da maps som ikke lenger er i bruk kan refereres til der.
 def getmaps():
-    with open(csgofolder + 'maplist.txt', 'r') as a_file:       
-        maplist = [line.strip() for line in a_file]
-        a_file = open(csgofolder + "maplist.txt", "r")
+    maplist = []
+    with open(csgofolder + 'maplist.txt', 'r') as a_file:
+        a_file = open(csgofolder + "maplist.txt", "r")    
+        for line in a_file:
+            line = re.sub(r'^.*?surf', 'surf', line)
+            maplist.append(line.strip())
+
         a_file.close()
         return maplist
 
