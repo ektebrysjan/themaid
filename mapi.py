@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import surfsql
 import os
+import time
 import json
+import changename as changename
 from flask_cors import CORS
+
+
 
 # Get config
 f = open("config.json", "r")
@@ -14,6 +18,10 @@ for setting, v in config.items():
     globals()[setting] = str(v)
 
 adomain = domain + 'https://'
+
+todoList = {1: {'instruks': '', 'type': ''}}
+iid = 1
+nameVar = ""
 
 app = Flask(__name__)
 CORS(app)
@@ -70,6 +78,25 @@ def maketable(arg):
 @app.route('/')
 def index():
     return "no request"
+
+
+@app.route('/ch', methods=['GET'])
+def ytchange():
+	YTid = "4c8_IcqLLo0"
+	nameR = ""
+	if 'id' in request.args:
+   		YTid = request.args['id']
+
+	nameR = request.args['n']
+
+	print(nameR)
+	#YTid = request.args['id']
+	print (YTid)
+
+	newname = changename.changeTitle(nameR, YTid)
+	time.sleep(2)
+	return redirect("https://www.youtube.com/watch?v=" + YTid, code=302)
+
 
 @app.route('/st', methods=['GET']) # status
 def status():
@@ -193,6 +220,42 @@ def getmaps():
 @app.route('/stock', methods=['GET'])
 def openstock():
 	return render_template('stock.html')	
+
+
+@app.route("/todo", methods=['GET'])
+def rettern():
+	global todoList
+
+
+	return jsonify(todoList)
+    
+@app.route("/addtodo", methods=['GET'])
+def addtodo():
+	global iid
+	
+	iid+=1
+	text_field = request.args.get('text-field')
+	todoList[iid] = {'instruks': text_field, 'type': "cmd"}
+
+	return jsonify(todoList)
+
+@app.route("/remote", methods=['GET'])
+def form():
+    html = """
+    <style>
+    body {
+    background: black;
+    color: white;
+    }
+    </style>
+    <form action="/addtodo" method="GET">
+      <label>Text field:</label>
+      <input type="text" id="text-field" name="text-field">
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+    """
+    return html
 
 if __name__ == "__main__":
     app.run(host=domain, port=aport, ssl_context=('/etc/letsencrypt/live/ma-surf.no/fullchain.pem', '/etc/letsencrypt/live/ma-surf.no/privkey.pem'))
