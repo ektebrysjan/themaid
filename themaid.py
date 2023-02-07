@@ -11,7 +11,7 @@ import changename as changename
 import openai
 import requests
 
-openai.api_key = "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"
+openai.api_key = ""
 convolist = []
 def itBot():
     global convolist
